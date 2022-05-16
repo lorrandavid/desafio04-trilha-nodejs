@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { User } from "../../model/User";
 import { IUsersRepository, ICreateUserDTO } from "../IUsersRepository";
 
@@ -19,23 +21,36 @@ class UsersRepository implements IUsersRepository {
   }
 
   create({ name, email }: ICreateUserDTO): User {
-    // Complete aqui
+    const user: User = new User();
+
+    Object.assign(user, {
+      name,
+      email,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    this.users.push(user);
+    return user;
   }
 
   findById(id: string): User | undefined {
-    // Complete aqui
+    return this.users.find((user) => user.id === id);
   }
 
   findByEmail(email: string): User | undefined {
-    // Complete aqui
+    return this.users.find((user) => user.email === email);
   }
 
   turnAdmin(receivedUser: User): User {
-    // Complete aqui
+    const userIdx = this.users.findIndex((user) => user.id === receivedUser.id);
+    const updatedUser = { ...receivedUser, admin: true };
+    this.users.splice(userIdx, 1, updatedUser);
+    return updatedUser;
   }
 
   list(): User[] {
-    // Complete aqui
+    return this.users;
   }
 }
 
